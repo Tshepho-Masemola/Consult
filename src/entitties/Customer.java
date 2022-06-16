@@ -3,13 +3,17 @@ package entitties;
 import java.util.ArrayList;
 
 public class Customer {
-//    private int customerID;
+    private int customerID;
     private String name;
     private String surname;
     private String cellPhone;
+    private int placeId;
     private ArrayList<Double> transaction;
 
-    public Customer( String name, String surname, String cellPhone) {
+    public Customer() {
+    }
+
+    public Customer(String name, String surname, String cellPhone) {
 //        this.customerID = customerID;
         this.name = name;
         this.surname = surname;
@@ -41,5 +45,37 @@ public class Customer {
 
     public ArrayList<Double> getTransaction() {
         return transaction;
+    }
+
+    public void setCustomerID(int customerID) {
+        this.customerID = customerID;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setSurname(String surname) {
+        this.surname = surname;
+    }
+
+    public void setCellPhone(String cellPhone) {
+        this.cellPhone = cellPhone;
+    }
+
+    public int getCustomerID() {
+        return customerID;
+    }
+
+    public int getPlaceId() {
+        return placeId;
+    }
+
+    public void setPlaceId(int placeId) {
+        this.placeId = placeId;
+    }
+
+    public void setTransaction(ArrayList<Double> transaction) {
+        this.transaction = transaction;
     }
 }
