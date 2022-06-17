@@ -17,6 +17,8 @@ public class Main {
             System.out.println(c.getCustomerID() + " " + c.getName() + " " + c.getSurname());
         }
 
+
+
         dataModel.close();
 //        ConsultList consult = new ConsultList("Test");
 //

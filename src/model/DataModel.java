@@ -1,6 +1,7 @@
 package model;
 
 import entitties.Customer;
+import entitties.Lists;
 import entitties.Place;
 
 import java.sql.*;
@@ -22,6 +23,10 @@ public class DataModel {
     public static final String TABLE_PLACE = "Place";
     public static final String COLUMN_PLACE_ID = "placeID";
     public static final String COLUMN_PLACE_NAME = "placeName";
+
+    public static final String TABLE_lIST = "List";
+    public static final String COLUMN_lIST_ID = "listID";
+    public static final String COLUMN_LIST_NAME = "listName";
 
     public static final String INSERT_INTO_CUSTOMER = "INSERT INTO " + TABLE_CUSTOMER + "(" +
             COLUMN_CUSTOMER_NAME + ", " + COLUMN_CUSTOMER_SURNAME + ", "
@@ -96,12 +101,48 @@ public class DataModel {
 
     }
 
+    public List<Lists> queryList() {
+        try (Statement statement = conn.createStatement();
+             ResultSet results = statement.executeQuery("SELECT * FROM " + TABLE_lIST)) {
+            List<Lists> customerList = new ArrayList<>();
+
+            while (results.next()) {
+                Lists lists = new Lists();
+                lists.setListId(results.getInt(COLUMN_lIST_ID));
+                lists.setListName(results.getString(COLUMN_LIST_NAME));
+                customerList.add(lists);
+            }
+            return customerList;
+        } catch (SQLException e) {
+            System.out.println("Query failed: " + e.getMessage());
+            return null;
+        }
+    }
+
+    public List<Place> queryPlace() {
+        try (Statement statement = conn.createStatement();
+             ResultSet resultSet = statement.executeQuery("SELECT * FROM " + TABLE_PLACE);) {
+            List<Place> places = new ArrayList<>();
+
+            while (resultSet.next()) {
+                Place place = new Place();
+                place.setPlaceId(resultSet.getInt(COLUMN_PLACE_ID));
+                place.setPlaceName(resultSet.getString(COLUMN_PLACE_NAME));
+                places.add(place);
+            }
+            return places;
+        } catch (SQLException e) {
+            System.out.println("Query failed: " + e.getMessage());
+            return null;
+        }
+    }
+
     public List<Customer> queryCustomer() {
         try (Statement statement = conn.createStatement();
              ResultSet results = statement.executeQuery("SELECT * FROM " + TABLE_CUSTOMER)) {
 
             List<Customer> customers = new ArrayList<>();
-            List<Place> places = new ArrayList<>();
+
 
             while (results.next()) {
                 Customer customer = new Customer();
@@ -113,13 +154,6 @@ public class DataModel {
                 customers.add(customer);
             }
 
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM " + TABLE_PLACE);
-            while (resultSet.next()) {
-                Place place = new Place();
-                place.setPlaceId(resultSet.getInt(COLUMN_PLACE_ID));
-                place.setPlaceName(resultSet.getString(COLUMN_PLACE_NAME));
-                places.add(place);
-            }
 
             return customers;
 

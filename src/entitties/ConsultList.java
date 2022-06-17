@@ -1,14 +1,20 @@
 package entitties;
 
+import model.DataModel;
+
 import java.util.ArrayList;
+import java.util.List;
 
 public class ConsultList {
     private String name;
-    private ArrayList<Place> places;
+    private ArrayList<Lists> customerLists;
+    private List<Place> places;
+    DataModel dataModel = new DataModel();
 
     public ConsultList(String name) {
         this.name = name;
-        this.places = new ArrayList<>();
+        this.customerLists = new ArrayList<>();
+        this.places = dataModel.queryPlace();
     }
 
     public boolean addPlace(String placeName) {
@@ -47,6 +53,23 @@ public class ConsultList {
         return null;
     }
 
+    public boolean addList(String listName){
+        Lists lists = findLists(listName);
+        if (lists == null){
+            this.customerLists.add(new Lists(listName));
+            return true;
+        }
+        return false;
+    }
+    private Lists findLists(String listName){
+        for (int i=0;i< customerLists.size();i++){
+            Lists checkedLists = this.customerLists.get(i);
+            if (checkedLists.getListName().equalsIgnoreCase(listName)){
+                return checkedLists;
+            }
+        }
+        return null;
+    }
     public boolean listCustomers(String placeName, boolean showTransaction) {
         Place place = findPlace(placeName);
         if (place != null) {
