@@ -2,6 +2,7 @@ import entitties.ConsultList;
 import entitties.Place;
 import model.DataModel;
 
+import java.sql.SQLException;
 import java.util.Scanner;
 
 public class Main {
@@ -9,7 +10,7 @@ public class Main {
     private static final ConsultList consult = new ConsultList();
     private static final DataModel dataModel = new DataModel();
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
 
 
         if (!dataModel.open()) {
@@ -35,9 +36,11 @@ public class Main {
                     place.printCustomers();
                     break;
                 case 3:
+                    consult.printList();
                     break;
                 case 4:
-                    consult.listPlaceCustomer();
+                    consult.addTransaction(6,233.44);
+//                    consult.listPlaceCustomer();
                     break;
                 case 5:
                     System.out.println("Enter place name");
