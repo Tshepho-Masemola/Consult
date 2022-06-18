@@ -40,6 +40,9 @@ public class Main {
                     consult.listPlaceCustomer();
                     break;
                 case 5:
+                    System.out.println("Enter place name");
+                    String name = scanner.nextLine();
+                    consult.listCustomers(name,false);
 //                    addTransaction();
                     break;
                 case 6:
