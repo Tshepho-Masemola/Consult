@@ -1,46 +1,90 @@
-import entitties.Customer;
+import entitties.ConsultList;
+import entitties.Place;
 import model.DataModel;
 
-import java.util.List;
+import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) {
-        DataModel dataModel = new DataModel();
+    private static final Scanner scanner = new Scanner(System.in);
+    private static final ConsultList consult = new ConsultList();
+    private static final DataModel dataModel = new DataModel();
 
-        if (!dataModel.open()){
+    public static void main(String[] args) {
+
+
+        if (!dataModel.open()) {
             System.out.println("Can't open datasource");
         }
+        menu();
+        boolean quit = false;
 
-        List<Customer> customers = dataModel.queryCustomer();
+        while (!quit) {
+            int action = scanner.nextInt();
+            scanner.nextLine();
 
-        for (var c : customers){
-            System.out.println(c.getCustomerID() + " " + c.getName() + " " + c.getSurname());
+            switch (action) {
+                case 0:
+                    System.out.println("Closing app...................");
+                    quit = true;
+                    break;
+                case 1:
+                    addCustomer();
+                    break;
+                case 2:
+                    Place place = new Place();
+                    place.printCustomers();
+                    break;
+                case 3:
+                    break;
+                case 4:
+                    consult.listPlaceCustomer();
+                    break;
+                case 5:
+//                    addTransaction();
+                    break;
+                case 6:
+                    menu();
+                    break;
+            }
         }
 
+
+//        List<Place> customers = dataModel.queryPlace();
+//        for (var c : customers) {
+//            System.out.println(c);
+//        }
 
 
         dataModel.close();
-//        ConsultList consult = new ConsultList("Test");
-//
-//        consult.addPlace("Phokoane");
-//        consult.addCustomer("Phokoane", "Linah", "Magolego",  "0832479619");
-//        consult.addCustomer("Phokoane", "Steave", "Mmamonyane",  "0727689036");
-//        consult.addCustomer("Phokoane", "Moses", "Mmakola",  "0766706390");
-//        consult.addCustomer("Phokoane", "Selinah", "Makunyane",  "0768226490");
-//        consult.addCustomer("Phokoane", "Linah", "Magolego",  "0832479619");
-//
-//        consult.addPlace("Lefufountein");
-//        consult.addCustomer("Lefufountein", "Sinah", "Mmamogobo",  "0734320566");
-//        consult.addPlace("Jane Furse");
-//        consult.addCustomer("Jane Furse", "Jonny", "Maake", "0829390595");
-//        consult.addPlace("Riverside");
-//        consult.addCustomer("Riverside", "Mmakadikwe", "Mahubene",  "0822156433");
-//
-//        consult.addCustomerTransaction("Phokoane","Linah",1500);
-//        consult.addCustomerTransaction("Phokoane","Linah",1200);
-//
-//        consult.listCustomers("Phokoane",true);
 
+    }
+
+    private static void menu() {
+        System.out.println("Available action\n\tpress:");
+        System.out.println("\t\t0 - to quit\n" +
+                "\t\t1 - to add customer\n" +
+                "\t\t2 - to view customers\n" +
+                "\t\t3 - to view all places\n" +
+                "\t\t4 - to view place per customers\n" +
+                "\t\t5 - to add transaction\n" +
+                "\t\t6 - print available actions");
+    }
+
+    private static void addCustomer() {
+        System.out.print("Enter place name: ");
+        String placeName = scanner.nextLine();
+        System.out.print("Enter name: ");
+        String name = scanner.nextLine();
+        System.out.print("Enter surname: ");
+        String surname = scanner.nextLine();
+        System.out.print("Enter cell phone: ");
+        String cellPhone = scanner.nextLine();
+
+        if (dataModel.insertCustomer(placeName,name,surname,cellPhone)) {
+            System.out.println("Customer " + name + " " + surname + " from " + placeName + " created");
+        }else {
+            System.out.println("Cannot add customer");
+        }
 
     }
 }

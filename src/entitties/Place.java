@@ -1,19 +1,25 @@
 package entitties;
 
+import model.DataModel;
+
 import java.util.ArrayList;
+import java.util.List;
 
 public class Place {
     private int placeId;
     private String placeName;
-    private ArrayList<Customer> customers;
+    private List<Customer> customers;
+    private final DataModel dataModel = new DataModel();
 
     public Place() {
+        dataModel.open();
+        this.customers = dataModel.queryCustomer();
+
     }
 
     public Place(String placeName) {
-//        this.placeId = placeId;
         this.placeName = placeName;
-        this.customers = new ArrayList<>();
+        this.customers = dataModel.queryCustomer();
     }
 
 
@@ -37,7 +43,7 @@ public class Place {
         this.customers = customers;
     }
 
-    public ArrayList<Customer> getCustomers() {
+    public List<Customer> getCustomers() {
         return customers;
     }
 
@@ -68,5 +74,19 @@ public class Place {
             }
         }
         return null;
+    }
+
+    public void printCustomers(){
+       if (this.customers != null) {
+           System.out.println("Customers");
+           for (var c : this.customers){
+               System.out.println(c);
+           }
+       }
+    }
+
+    @Override
+    public String toString() {
+        return placeName;
     }
 }

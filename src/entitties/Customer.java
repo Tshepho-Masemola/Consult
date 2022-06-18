@@ -78,4 +78,9 @@ public class Customer {
     public void setTransaction(ArrayList<Double> transaction) {
         this.transaction = transaction;
     }
+
+    @Override
+    public String toString() {
+        return "Name: " + name + ", Surname: " + surname + ", Cell phone: " + cellPhone;
+    }
 }

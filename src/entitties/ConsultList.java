@@ -8,8 +8,14 @@ import java.util.List;
 public class ConsultList {
     private String name;
     private ArrayList<Lists> customerLists;
-    private List<Place> places;
+    private final List<Place> places;
     DataModel dataModel = new DataModel();
+
+    public ConsultList() {
+        dataModel.open();
+        this.places = dataModel.queryPlace();
+
+    }
 
     public ConsultList(String name) {
         this.name = name;
@@ -37,7 +43,7 @@ public class ConsultList {
     public boolean addCustomerTransaction(String placeName, String customerName, double amount) {
         Place place = findPlace(placeName);
         if (place != null) {
-             place.addCustomerTransaction(customerName, amount);
+            place.addCustomerTransaction(customerName, amount);
             return true;
         }
         return false;
@@ -53,29 +59,47 @@ public class ConsultList {
         return null;
     }
 
-    public boolean addList(String listName){
+    public boolean addList(String listName) {
         Lists lists = findLists(listName);
-        if (lists == null){
+        if (lists == null) {
             this.customerLists.add(new Lists(listName));
             return true;
         }
         return false;
     }
-    private Lists findLists(String listName){
-        for (int i=0;i< customerLists.size();i++){
+
+    private Lists findLists(String listName) {
+        for (int i = 0; i < customerLists.size(); i++) {
             Lists checkedLists = this.customerLists.get(i);
-            if (checkedLists.getListName().equalsIgnoreCase(listName)){
+            if (checkedLists.getListName().equalsIgnoreCase(listName)) {
                 return checkedLists;
             }
         }
         return null;
     }
+
+    public void listPlaceCustomer() {
+        for (Place place : places) {
+            if (place != null){
+                System.out.println("Customers for: " + place.getPlaceName());
+                List<Customer> customers = place.getCustomers();
+                for (int i = 0; i < customers.size(); i++) {
+                    Customer customer = customers.get(i);
+                    if (place.getPlaceId()==customer.getPlaceId()) {
+                        System.out.println("\t"+customers.get(i));
+                    }
+                }
+            }
+
+        }
+    }
+
     public boolean listCustomers(String placeName, boolean showTransaction) {
         Place place = findPlace(placeName);
         if (place != null) {
             System.out.println("Customer details for " + place.getPlaceName());
 
-            ArrayList<Customer> customers = place.getCustomers();
+            List<Customer> customers = place.getCustomers();
             for (int i = 0; i < customers.size(); i++) {
                 Customer placeCustomer = customers.get(i);
                 System.out.println("Customer name: " + placeCustomer.getName() + ", Customer Surname: " + placeCustomer.getSurname() +

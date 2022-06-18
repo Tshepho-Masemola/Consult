@@ -98,7 +98,64 @@ public class DataModel {
         } catch (SQLException e) {
             System.out.println("Couldn't close connection: " + e.getMessage());
         }
+    }
 
+    public boolean insertCustomer(String placeName, String name, String surname, String cellphone) {
+        try {
+            conn.setAutoCommit(false);
+
+            int placeId = insertPlace(placeName);
+
+            insertIntoCustomer.setString(1,name);
+            insertIntoCustomer.setString(2,surname);
+            insertIntoCustomer.setString(3,cellphone);
+            insertIntoCustomer.setInt(4,placeId);
+
+            int affectedRows =insertIntoCustomer.executeUpdate();
+            if (affectedRows == 1){
+                conn.commit();
+            }else {
+                throw new  SQLException("Customer insert failed");
+            }
+            return true;
+
+        }catch (SQLException e) {
+            System.out.println("Insert customer exception: " + e.getMessage());
+            try {
+                System.out.println("Performing rollback");
+                conn.rollback();
+            } catch (SQLException e2) {
+                System.out.println("Things are really bad! " + e2.getMessage());
+            }
+        } finally {
+            try {
+                System.out.println("Resetting default commit behavior");
+                conn.setAutoCommit(true);
+            } catch (SQLException e) {
+                System.out.println("Couldn't reset auto-commit! " + e.getMessage());
+            }
+        }
+        return false;
+    }
+        public int insertPlace(String name) throws SQLException {
+        queryPlace.setString(1,name);
+        ResultSet results = queryPlace.executeQuery();
+        if (results.next()){
+            return results.getInt(1);
+        }else {
+            insertIntoPlace.setString(1,name);
+            int affectedRows =insertIntoPlace.executeUpdate();
+
+            if (affectedRows !=1){
+                throw new SQLException("Couldn't insert place!");
+            }
+            ResultSet generatedKey = insertIntoPlace.getGeneratedKeys();
+            if (generatedKey.next()){
+                return generatedKey.getInt(1);
+            }else {
+                throw new SQLException("Couldn't get ID for place!");
+            }
+        }
     }
 
     public List<Lists> queryList() {
@@ -121,7 +178,7 @@ public class DataModel {
 
     public List<Place> queryPlace() {
         try (Statement statement = conn.createStatement();
-             ResultSet resultSet = statement.executeQuery("SELECT * FROM " + TABLE_PLACE);) {
+             ResultSet resultSet = statement.executeQuery("SELECT * FROM " + TABLE_PLACE)) {
             List<Place> places = new ArrayList<>();
 
             while (resultSet.next()) {
@@ -143,7 +200,6 @@ public class DataModel {
 
             List<Customer> customers = new ArrayList<>();
 
-
             while (results.next()) {
                 Customer customer = new Customer();
                 customer.setCustomerID(results.getInt(COLUMN_CUSTOMER_ID));
@@ -153,7 +209,6 @@ public class DataModel {
                 customer.setPlaceId(results.getInt(COLUMN_CUSTOMER_PLACE_ID));
                 customers.add(customer);
             }
-
 
             return customers;
 
