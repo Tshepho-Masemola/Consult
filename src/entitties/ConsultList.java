@@ -84,9 +84,9 @@ public class ConsultList {
 
     public boolean addTransaction(int customerID, double amount){
         int customer = findCustomer(customerID);
-        if (customerID > 0){
+        if (customer > 0){
             java.sql.Date date = new  java.sql.Date(Calendar.getInstance().getTime().getTime());
-            dataModel.insertTransaction(customerID,amount, date);
+            dataModel.insertTransaction(customer,amount, date);
             return true;
         }
         return false;
@@ -107,7 +107,7 @@ public class ConsultList {
         int index = custID - 1;
         for (Place place : places) {
             List<Customer> customers = place.getCustomers();
-                if ((index > 0) && (index < customers.size())) {
+                if ((index >= 0) && (index < customers.size())) {
                     return customers.get(index).getCustomerID();
 
             }
@@ -144,6 +144,12 @@ public class ConsultList {
             }
 
         }
+    }
+
+    public void updatePlaceName(){
+        System.out.println(places.get(0));
+        final Place place = places.get(0);
+        dataModel.updatePlaceName(place.getPlaceId(),"Johannesburg");
     }
 
     public boolean listCustomers(String placeName, boolean showTransaction) {

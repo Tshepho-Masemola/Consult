@@ -1,3 +1,4 @@
+import entitties.AttendanceList;
 import entitties.ConsultList;
 import entitties.Place;
 import model.DataModel;
@@ -9,6 +10,7 @@ public class Main {
     private static final Scanner scanner = new Scanner(System.in);
     private static final ConsultList consult = new ConsultList();
     private static final DataModel dataModel = new DataModel();
+    private static final AttendanceList attendanceList = new AttendanceList();
 
     public static void main(String[] args) throws SQLException {
 
@@ -39,7 +41,7 @@ public class Main {
                     consult.printList();
                     break;
                 case 4:
-                    consult.addTransaction(6,233.44);
+                    consult.updatePlaceName();
 //                    consult.listPlaceCustomer();
                     break;
                 case 5:

@@ -1,5 +1,6 @@
 package model;
 
+import entitties.Attendance;
 import entitties.Customer;
 import entitties.Lists;
 import entitties.Place;
@@ -38,6 +39,11 @@ public class DataModel {
     public static final String COLUMN_CUSTOMER_LIST_LIST_ID = "listID";
     public static final String COLUMN_CUSTOMER_lIST_CUSTOMER_ID = "customerID";
 
+    public static final String TABLE_ATTENDANCE = "Attendance";
+    public static final String COLUMN_ATTENDANCE_CUSTOMER_ID = "customerID";
+    public static final String COLUMN_ATTENDANCE_DATE = "attendanceDate";
+    public static final String COLUMN_ATTENDANCE_NUMBER = "numberOfAttendance";
+
     public static final String INSERT_INTO_CUSTOMER = "INSERT INTO " + TABLE_CUSTOMER + "(" +
             COLUMN_CUSTOMER_NAME + ", " + COLUMN_CUSTOMER_SURNAME + ", "
             + COLUMN_CUSTOMER_CELLPHONE + ", " + COLUMN_CUSTOMER_PLACE_ID + ") VALUES (?,?,?,?)";
@@ -52,8 +58,12 @@ public class DataModel {
             COLUMN_CUSTOMER_LIST_LIST_ID + ", " + COLUMN_CUSTOMER_lIST_CUSTOMER_ID + ") VALUES (?,?)";
 
     public static final String INSERT_INTO_TRANSACTION = "INSERT INTO " + TABLE_TRANSACTION + "(" +
-            COLUMN_TRANSACTION_CUSTOMER_ID + ", " + COLUMN_TRANSACTION_AMOUNT +  ","
+            COLUMN_TRANSACTION_CUSTOMER_ID + ", " + COLUMN_TRANSACTION_AMOUNT + ","
             + COLUMN_TRANSACTION_DATE + ") VALUES (?,?,?)";
+
+    public static final String INSERT_INTO_ATTENDANCE = "INSERT INTO " + TABLE_ATTENDANCE + "(" +
+            COLUMN_ATTENDANCE_CUSTOMER_ID + ", " + COLUMN_ATTENDANCE_DATE + ", " + COLUMN_ATTENDANCE_NUMBER + ")" +
+            " VALUES (?,?,?)";
     public static final String QUERY_PLACE = "SELECT " + COLUMN_PLACE_ID + " FROM " + TABLE_PLACE +
             " WHERE " + COLUMN_PLACE_NAME + " = ?";
 
@@ -71,6 +81,9 @@ public class DataModel {
             COLUMN_CUSTOMER_SURNAME + ", " + TABLE_CUSTOMER + "." + COLUMN_CUSTOMER_CELLPHONE + " FROM "
             + TABLE_CUSTOMER + " JOIN " + TABLE_PLACE + " ON " + TABLE_CUSTOMER + "." + COLUMN_CUSTOMER_PLACE_ID
             + " = " + TABLE_PLACE + "." + COLUMN_PLACE_ID;
+
+    public static final String UPDATE_CUSTOMER_PLACE = "UPDATE " + TABLE_PLACE + " SET " + COLUMN_PLACE_NAME +
+            " = ? WHERE " + COLUMN_PLACE_ID + " = ?";
     private Connection conn;
 
     private PreparedStatement insertIntoCustomer;
@@ -79,12 +92,15 @@ public class DataModel {
     private PreparedStatement insertIntoCustomerList;
     private PreparedStatement insertIntoList;
 
+    private PreparedStatement insertIntoAttendance;
+
     private PreparedStatement queryPlace;
     private PreparedStatement queryCustomer;
 
     private PreparedStatement queryList;
     private PreparedStatement queryCustomerByPlace;
     private PreparedStatement queryCustomerList;
+    private PreparedStatement updatePlace;
 
     public boolean open() {
         try {
@@ -93,12 +109,14 @@ public class DataModel {
             insertIntoCustomer = conn.prepareStatement(INSERT_INTO_CUSTOMER, Statement.RETURN_GENERATED_KEYS);
             insertIntoTransaction = conn.prepareStatement(INSERT_INTO_TRANSACTION, Statement.RETURN_GENERATED_KEYS);
             insertIntoCustomerList = conn.prepareStatement(INSERT_INTO_CUSTOMER_LIST, Statement.RETURN_GENERATED_KEYS);
-            insertIntoList = conn.prepareStatement(INSERT_INTO_LIST);
+            insertIntoList = conn.prepareStatement(INSERT_INTO_LIST, Statement.RETURN_GENERATED_KEYS);
+            insertIntoAttendance = conn.prepareStatement(INSERT_INTO_ATTENDANCE, Statement.RETURN_GENERATED_KEYS);
             queryPlace = conn.prepareStatement(QUERY_PLACE);
             queryCustomer = conn.prepareStatement(QUERY_CUSTOMER);
             queryCustomerByPlace = conn.prepareStatement(QUERY_CUSTOMER_BY_PLACE);
             queryList = conn.prepareStatement(QUERY_LIST);
             queryCustomerList = conn.prepareStatement(QUERY_CUSTOMER_LIST);
+            updatePlace = conn.prepareStatement(UPDATE_CUSTOMER_PLACE);
             return true;
         } catch (SQLException e) {
             System.out.println("Couldn't connect to database: " + e.getMessage());
@@ -109,9 +127,6 @@ public class DataModel {
 
     public void close() {
         try {
-            if (conn != null) {
-                conn.close();
-            }
             if (insertIntoPlace != null) {
                 insertIntoPlace.close();
             }
@@ -127,6 +142,9 @@ public class DataModel {
             if (insertIntoCustomerList != null) {
                 insertIntoCustomerList.close();
             }
+            if (insertIntoAttendance != null) {
+                insertIntoAttendance.close();
+            }
             if (queryPlace != null) {
                 queryPlace.close();
             }
@@ -141,6 +159,12 @@ public class DataModel {
             }
             if (queryCustomerList != null) {
                 queryCustomerList.close();
+            }
+            if (updatePlace != null) {
+                updatePlace.close();
+            }
+            if (conn != null) {
+                conn.close();
             }
         } catch (SQLException e) {
             System.out.println("Couldn't close connection: " + e.getMessage());
@@ -264,23 +288,55 @@ public class DataModel {
         return -1;
     }
 
-    public boolean insertTransaction(int customerId, double amount, Date date){
+    public boolean insertTransaction(int customerId, double amount, Date date) {
         try {
-            insertIntoTransaction.setInt(1,customerId);
-            insertIntoTransaction.setDouble(2,amount);
-            insertIntoTransaction.setDate(3,date);
+            insertIntoTransaction.setInt(1, customerId);
+            insertIntoTransaction.setDouble(2, amount);
+            insertIntoTransaction.setDate(3, date);
             int affectedRows = insertIntoTransaction.executeUpdate();
 
             if (affectedRows == 1) {
                 return true;
-            }else {
+            } else {
                 throw new SQLException("Couldn't insert into transaction");
             }
 
-        }catch (SQLException e){
+        } catch (SQLException e) {
             System.out.println("Insert transaction failed: " + e.getMessage());
         }
         return false;
+    }
+
+    public boolean insertAttendance(int customerID, Date date, int numberOfAttendance) {
+        try {
+            insertIntoAttendance.setInt(1, customerID);
+            insertIntoAttendance.setDate(2, date);
+            insertIntoAttendance.setInt(3, numberOfAttendance);
+            int affectedRows = insertIntoAttendance.executeUpdate();
+
+            if (affectedRows == 1) {
+                return true;
+            } else {
+                throw new SQLException("Couldn't insert into attendance");
+            }
+        } catch (SQLException e) {
+            System.out.println("Insert attendance failed: " + e.getMessage());
+        }
+        return false;
+    }
+
+    public boolean updatePlaceName(int id, String newName) {
+        try {
+            updatePlace.setString(1, newName);
+            updatePlace.setInt(2, id);
+            int affectedRows = updatePlace.executeUpdate();
+
+            return affectedRows == 1;
+
+        } catch (SQLException e) {
+            System.out.println("Update failed: " + e.getMessage());
+            return false;
+        }
     }
 
     public List<Lists> queryList() {
@@ -338,6 +394,26 @@ public class DataModel {
             return customers;
 
 
+        } catch (SQLException e) {
+            System.out.println("Query failed: " + e.getMessage());
+            return null;
+        }
+    }
+
+    public List<Attendance> queryAttendance() {
+        try (Statement statement = conn.createStatement();
+             ResultSet results = statement.executeQuery("SELECT * FROM " + TABLE_ATTENDANCE)) {
+
+            List<Attendance> attendances = new ArrayList<>();
+
+            while (results.next()) {
+                Attendance attendance = new Attendance();
+                attendance.setCustomerID(results.getInt(COLUMN_ATTENDANCE_CUSTOMER_ID));
+                attendance.setAttendanceDate(results.getDate(COLUMN_ATTENDANCE_DATE));
+                attendance.setNumberOfAttendance(results.getInt(COLUMN_ATTENDANCE_NUMBER));
+                attendances.add(attendance);
+            }
+            return attendances;
         } catch (SQLException e) {
             System.out.println("Query failed: " + e.getMessage());
             return null;

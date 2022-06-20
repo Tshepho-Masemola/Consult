@@ -1,14 +1,16 @@
 package entitties;
 
+import java.sql.Date;
+
 public class Attendance {
     private int customerID;
-    private String attendanceDate;
+    private Date attendanceDate;
     private int numberOfAttendance;
 
     public Attendance() {
     }
 
-    public Attendance(int customerID, String attendanceDate, int numberOfAttendance) {
+    public Attendance(int customerID, Date attendanceDate, int numberOfAttendance) {
         this.customerID = customerID;
         this.attendanceDate = attendanceDate;
         this.numberOfAttendance = numberOfAttendance;
@@ -22,11 +24,11 @@ public class Attendance {
         this.customerID = customerID;
     }
 
-    public String getAttendanceDate() {
+    public Date getAttendanceDate() {
         return attendanceDate;
     }
 
-    public void setAttendanceDate(String attendanceDate) {
+    public void setAttendanceDate(Date attendanceDate) {
         this.attendanceDate = attendanceDate;
     }
 
@@ -36,5 +38,12 @@ public class Attendance {
 
     public void setNumberOfAttendance(int numberOfAttendance) {
         this.numberOfAttendance = numberOfAttendance;
+    }
+
+    public void addAdjustAttendance(int attendance){
+        int newAttendanceNumber = this.numberOfAttendance + attendance;
+        if (newAttendanceNumber >0){
+            this.numberOfAttendance = newAttendanceNumber;
+        }
     }
 }
