@@ -1,15 +1,18 @@
+import entitties.AttendanceList;
 import entitties.ConsultList;
 import entitties.Place;
 import model.DataModel;
 
+import java.sql.SQLException;
 import java.util.Scanner;
 
 public class Main {
     private static final Scanner scanner = new Scanner(System.in);
     private static final ConsultList consult = new ConsultList();
-    private static final DataModel dataModel = new DataModel();
+    private static final DataModel dataModel =  DataModel.getInstance();
+    private static final AttendanceList attendanceList = new AttendanceList();
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
 
 
         if (!dataModel.open()) {
@@ -35,9 +38,11 @@ public class Main {
                     place.printCustomers();
                     break;
                 case 3:
+                    consult.printList();
                     break;
                 case 4:
-                    consult.listPlaceCustomer();
+                    consult.updatePlaceName();
+//                    consult.listPlaceCustomer();
                     break;
                 case 5:
                     System.out.println("Enter place name");

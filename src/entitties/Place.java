@@ -9,7 +9,7 @@ public class Place {
     private int placeId;
     private String placeName;
     private List<Customer> customers;
-    private final DataModel dataModel = new DataModel();
+    private final DataModel dataModel =  DataModel.getInstance();
 
     public Place() {
         dataModel.open();
