@@ -8,7 +8,7 @@ import java.util.List;
 public class AttendanceList {
     private List<Attendance> attendances ;
     private List<Place> places;
-    private DataModel dataModel = new DataModel();
+    private DataModel dataModel =  DataModel.getInstance();
 
     public AttendanceList() {
         dataModel.open();

@@ -9,7 +9,7 @@ import java.util.Scanner;
 public class Main {
     private static final Scanner scanner = new Scanner(System.in);
     private static final ConsultList consult = new ConsultList();
-    private static final DataModel dataModel = new DataModel();
+    private static final DataModel dataModel =  DataModel.getInstance();
     private static final AttendanceList attendanceList = new AttendanceList();
 
     public static void main(String[] args) throws SQLException {

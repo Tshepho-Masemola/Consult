@@ -102,6 +102,14 @@ public class DataModel {
     private PreparedStatement queryCustomerList;
     private PreparedStatement updatePlace;
 
+    private static DataModel instance = new DataModel();
+    private DataModel(){
+
+    }
+
+    public static DataModel getInstance(){
+        return instance;
+    }
     public boolean open() {
         try {
             conn = DriverManager.getConnection(dbURL, user, pass);
@@ -190,7 +198,7 @@ public class DataModel {
             }
             return true;
 
-        } catch (SQLException e) {
+        } catch (Exception e) {
             System.out.println("Insert customer exception: " + e.getMessage());
             try {
                 System.out.println("Performing rollback");

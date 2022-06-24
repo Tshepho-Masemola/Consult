@@ -11,7 +11,7 @@ public class ConsultList {
     private String name;
     private final List<Lists> customerLists;
     private final List<Place> places;
-    DataModel dataModel = new DataModel();
+    DataModel dataModel = DataModel.getInstance();
 
     public ConsultList() {
         dataModel.open();
