@@ -32,7 +32,7 @@ public class Main {
                     break;
                 case 2:
                     Place place = new Place();
-                    place.printCustomers();
+                    place.printCustomersToFile();
                     break;
                 case 3:
                     break;
