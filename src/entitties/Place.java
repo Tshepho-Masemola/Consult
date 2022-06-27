@@ -2,6 +2,8 @@ package entitties;
 
 import model.DataModel;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -83,6 +85,19 @@ public class Place {
                System.out.println(c);
            }
        }
+    }
+
+    public void printCustomersToFile(){
+        if (this.customers != null) {
+            try(FileWriter locFile = new FileWriter("customer.csv")) {
+                locFile.write("ID,Name,Surname,Cell Phone\n");
+                for (var c : this.customers){
+                    locFile.write(c.getCustomerID() +","+c.getName()+","+c.getSurname()+","+c.getCellPhone()+"\n");
+                }
+            }catch (IOException e){
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
